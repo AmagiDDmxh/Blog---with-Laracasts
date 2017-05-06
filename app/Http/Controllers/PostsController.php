@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Post;
+use App\Repositories\Posts;
+use Carbon\Carbon;
 
 class PostsController extends Controller
 {
-    public function index()
+    public function __construct()
     {
-        $posts = Post::latest()->get();
+        $this->middleware('auth')->except(['index', 'show']);
+    }
 
-        return view('posts.index', compact('posts'));
+    public function index(Posts $posts)
+    {
+        $posts = $posts->all();
+
+        return view('posts.index', compact('posts', 'archives'));
     }
 
     public function show(Post $post)
@@ -30,7 +36,11 @@ class PostsController extends Controller
             'title' => 'required',
             'body' => 'required'
         ]);
-        Post::create(request(['title', 'body']));
+
+        auth()->user()->publish(
+            new Post(request(['title', 'body']))
+        );
+
         return redirect('/');
     }
 }

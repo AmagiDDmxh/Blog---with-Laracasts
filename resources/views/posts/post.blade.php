@@ -4,7 +4,10 @@
       {{ $post->title }}
     </a>
   </h2>
-  <div class="blog-post-meta">{{ $post->created_at->timezone('Asia/Shanghai')->toDayDateTimeString() }}</div>
+  <div class="blog-post-meta">
+    {{ $post->user->name }} on
+    {{ $post->created_at->timezone('Asia/Shanghai')->toDayDateTimeString() }}
+  </div>
 
   {{ $post->body }}
 
